@@ -1,0 +1,34 @@
+@function vw($value,$base:1920) {
+    @return $value/$base*100vw
+}
+@function vwmin($value,$base:750) {
+    @return $value/$base*100vw
+}
+
+.container{
+    display: flex;
+    flex-direction: column;
+    width: max-content;
+    height: 70vh;
+    border-radius: vw(10);
+    overflow: hidden;
+    overflow-y:scroll;
+    transition: all 0.3s;
+
+    &::-webkit-scrollbar{
+        width: vw(10);
+    }
+
+    &::-webkit-scrollbar-track{
+        -webkit-box-shadow: vw(5) vw(5) vw(5) vw(-5) rgba(34, 60, 80, 0.2) inset;
+        background-color: #313146;
+        border-radius: vw(10);
+    }
+    &::-webkit-scrollbar-thumb{
+        border-radius: vw(10);
+        background: linear-gradient(45deg, rgb(201, 114, 58) 23%, rgb(96, 60, 20));
+
+    }
+
+}
+

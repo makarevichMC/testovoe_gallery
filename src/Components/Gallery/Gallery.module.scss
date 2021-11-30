@@ -1,0 +1,25 @@
+.wrapper{
+    width: 70vw;
+    margin: 0 auto;
+    margin-top: 10vh;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 30px;
+    height: 300vw;
+}
+.noscroll{
+    overflow: hidden;
+}
+.img_item{
+    margin-bottom: 15px;
+    opacity: 0.6;
+    transition: opacity 0.3s;
+    &:hover{
+        opacity: 1;
+    }
+    &_active{
+        border: 4px solid #c9723a;
+        border-radius: 20px;
+        opacity: 1;
+    }
+}

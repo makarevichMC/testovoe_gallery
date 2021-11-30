@@ -1,0 +1,61 @@
+
+.wrapper {
+    display: flex;
+    position: relative;
+    height: 40px;
+    width: 50px;
+    span {
+        position: absolute;
+        right: 0;
+        top:50%;
+        transform: translateY(-50%);
+        font-size: 16px;
+        color:crimson;
+    }
+}
+
+.pressed, .not_pressed {
+    left: 0;
+    top:50%;
+    transform: translateY(-50%);
+    position: absolute;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #EDEFF2;
+
+    svg {
+        height: 15px;
+    }
+
+}
+
+.not_pressed {
+    svg {
+        path {
+            fill: gray;
+        }
+    }
+}
+
+.pressed {
+    svg {
+        path {
+            fill: crimson;
+        }
+    }
+}
+
+.animated{
+    animation: size 0.2s;
+}
+
+@keyframes size {
+    0% {padding:2px;}
+    50% {padding:4px;}
+    100% {padding:2px;}
+}

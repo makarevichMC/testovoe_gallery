@@ -1,0 +1,12 @@
+body{
+    background-color: #313146;
+    font-family: system-ui,sans-serif;
+    font-weight: 500;
+}
+img{
+    -khtml-user-select: none;
+    -o-user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}

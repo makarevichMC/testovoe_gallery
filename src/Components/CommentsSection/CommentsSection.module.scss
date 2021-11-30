@@ -1,0 +1,15 @@
+.wrapper{
+    background-color: white;
+    min-height: 200px;
+    border-radius: 8px;
+    padding: 0 40px 10px 40px;
+}
+
+.input_section{
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    textarea{
+        margin-right: 40px;
+    }
+}

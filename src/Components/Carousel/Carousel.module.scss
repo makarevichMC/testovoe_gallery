@@ -1,0 +1,48 @@
+
+
+.wrapper{
+    overflow: hidden;
+    border-radius: 20px;
+}
+.paddings{
+    padding:0 50px;
+    position: relative;
+    .arrow{
+
+        &_left,&_right{
+            position: absolute;
+            z-index: 15;
+            top:50%;
+            cursor: pointer;
+            svg{
+                width: 30px;
+                height: 30px;
+
+                path{
+                    transition: all 0.3s;
+                    fill:#fff;
+                }
+            }
+            &:hover{
+                svg{
+                    path{
+                        fill: #bababa;
+                    }
+                }
+            }
+        }
+
+        &_left{
+            left:0
+        }
+        &_right{
+            right:0
+        }
+    }
+}
+.item_line{
+    display: flex;
+}
+.item{
+    font-size: 2px;
+}

@@ -1,0 +1,12 @@
+@function vw($value,$base:1920) {
+    @return $value/$base*100vw
+}
+
+.item{
+    img{
+        cursor: pointer;
+        border-radius: vw(10); ;
+        float: left;
+        object-fit: cover;
+    }
+}
