@@ -11,7 +11,7 @@ type ImageCardProps ={
 const ImageCard:FC<ImageCardProps> = ({src,alt,clickCB,size}) => {
     return (
         <div className={styles.item}>
-            <img src={src} alt={alt}
+            <img src={src} alt={alt} loading={'eager'}
                  onClick={()=>{
                       if(clickCB) clickCB()
                  }}

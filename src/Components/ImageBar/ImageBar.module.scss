@@ -14,6 +14,7 @@
     overflow: hidden;
     overflow-y:scroll;
     transition: all 0.3s;
+    cursor: pointer;
 
     &::-webkit-scrollbar{
         width: vw(10);
@@ -29,6 +30,6 @@
         background: linear-gradient(45deg, rgb(201, 114, 58) 23%, rgb(96, 60, 20));
 
     }
-
+    scrollbar-color: #FFC9723A #313146;
 }
 

@@ -10,6 +10,7 @@ import DefaultUser from './../../images/default_user.png';
 import {CurrentUser} from '../../index';
 
 
+
 const Gallery: FC = () => {
 
     const [showModal, setShowModal] = useState(false);
@@ -32,9 +33,8 @@ const Gallery: FC = () => {
     const imgCards = images.map((image, i) => {
 
         const className = i === activeSlide ? `${styles.img_item} ${styles.img_item_active}` : styles.img_item;
-
         return (
-            <div  key={i} className={className}>
+            <div key={i} className={className}>
                 <ImageCard src={image.src} alt={image.alt} size={'200px'}
                            clickCB={() => {
                                setActiveSlide(i);
@@ -43,7 +43,7 @@ const Gallery: FC = () => {
     })
 
     const carouselCards = images.map((image, i) =>
-        <ImageCard key={i} src={image.src} alt={image.alt} size={'700px'}/>);
+        <ImageCard key={i} src={image.src}  alt={image.alt} size={'700px'}/>);
 
 
     const addComment = (text: string) => {
@@ -65,7 +65,9 @@ const Gallery: FC = () => {
         })
     }
 
+
     const isLiked = mokedData[activeSlide].likedBy.includes(user.id);
+
 
     const addLike = () => {
         setMokedData(prev => {
@@ -88,28 +90,28 @@ const Gallery: FC = () => {
 
     const openModal = (e: React.MouseEvent) => {
 
-            if (wasMoved.current) return
+        if (wasMoved.current) return
 
-            const target = e.target as HTMLElement
+        const target = e.target as HTMLElement
 
-            if (target.tagName === 'IMG') {
+        if (target.tagName === 'IMG') {
 
-                const img = target as HTMLImageElement
+            const img = target as HTMLImageElement
 
-                setImgInfo({
-                    src: img.src,
-                    alt: img.alt
-                })
-                document.body.classList.toggle(styles.noscroll)
-                setShowModal(true);
-            } else return;
+            setImgInfo({
+                src: img.src,
+                alt: img.alt
+            })
+            document.body.classList.toggle(styles.noscroll)
+            setShowModal(true);
+        } else return;
 
     }
     const onMouseDown = (e: React.MouseEvent) => {
-            wasMoved.current = false
+        wasMoved.current = false
     }
     const onMouseMove = (e: React.MouseEvent) => {
-            wasMoved.current = true
+        wasMoved.current = true
     }
 
     const closeModal = () => {
@@ -123,13 +125,15 @@ const Gallery: FC = () => {
                 onClick={openModal}
                 onPointerDown={onMouseDown}
                 onPointerMove={onMouseMove}>
-                <Carousel activeSlideNumber={activeSlide} getActiveSlide={(slide:number)=>setActiveSlide(slide)} >
+                <Carousel activeSlideNumber={activeSlide} getActiveSlide={(slide: number) => {
+                    setActiveSlide(slide)
+                }}>
                     {carouselCards}
                 </Carousel>
             </div>
-                <ImageBar imageHeight={215} scrollToSlide={activeSlide}>
-                    {imgCards}
-                </ImageBar>
+            <ImageBar imageHeight={215} scrollToSlide={activeSlide}>
+                {imgCards}
+            </ImageBar>
 
             {
                 imgInfo && showModal &&

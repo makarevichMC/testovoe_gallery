@@ -2,6 +2,7 @@ import React, {FC, useEffect, useRef, useState} from 'react';
 import styles from './Carousel.module.scss';
 import {ReactComponent as ArrowLeft} from '../../images/arrow_left.svg';
 import {ReactComponent as ArrowRight} from '../../images/arrow_right.svg';
+import {log} from 'util';
 
 type CarouselProps = {
     activeSlideNumber?: number
@@ -24,35 +25,103 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
     const wrapperRef = useRef<null | HTMLDivElement>(null);  // carousel viewport
     const lineRef = useRef<null | HTMLDivElement>(null);     // carousel draggable line
 
+    const timeout = useRef<NodeJS.Timeout | null>(null);
+    const bugFix = useRef<NodeJS.Timeout | null>(null);
+    const trackingAnimation = useRef({
+        startingSlide: 0,
+        destinationSlide: 0,
+        animationStart: Date.now(),
+        fullAnimationTime: 0,
+        currentShift:null as null | number
+    });
 
     useEffect(() => {
-        if (activeSlideNumber !== undefined) setActiveSlide(activeSlideNumber)
+        if (activeSlideNumber !== undefined) {
+            setActiveSlide(activeSlideNumber)
+        }
     }, [activeSlideNumber])
 
     useEffect(() => {
-        if (getActiveSlide) getActiveSlide(activeSlide);
+        if (getActiveSlide) {
+            getActiveSlide(activeSlide)
+        };
+
+        const baseSlowDown = 0.25;
+
+        let slidesPerSweep = trackingAnimation.current.currentShift ?
+            Math.abs((trackingAnimation.current.currentShift - activeSlide * width) / width):
+            Math.abs((currentShift - activeSlide * width) / width);
+
+        let animationTime = baseSlowDown * slidesPerSweep;
+
 
         if (lineRef.current) {
 
+            if (!allowStartDrag && timeout.current && bugFix.current) {
+
+                clearTimeout(timeout.current);
+                clearInterval(bugFix.current);
+
+                const now = Date.now();
+                const animationRanFor = (now - trackingAnimation.current.animationStart) / 1000;
+                const start =  trackingAnimation.current.startingSlide;
+                const end = trackingAnimation.current.destinationSlide;
+                const slidesMoved = Math.floor(Math.abs(end-start)*animationRanFor/trackingAnimation.current.fullAnimationTime);
+                const currentSlide = start < end ? start + slidesMoved : start - slidesMoved;
+                trackingAnimation.current.currentShift = currentSlide*width;
+
+
+                slidesPerSweep = Math.abs(activeSlide - currentSlide);
+                animationTime = slidesPerSweep * baseSlowDown;
+
+            }
             setAllowStartDrag(false);
 
-            const slidesPerSweep = Math.abs((currentShift - activeSlide * width) / width);
-            const slowDownCoeff = 0.25 * slidesPerSweep;
-            setCurrentShift(activeSlide * width);
-            setSavedShift(activeSlide * width);
+            trackingAnimation.current.startingSlide = currentShift / width;
+            trackingAnimation.current.animationStart = Date.now();
+            trackingAnimation.current.destinationSlide = activeSlide;
+            trackingAnimation.current.fullAnimationTime = animationTime;
 
-            lineRef.current.style.transition = `transform ${slowDownCoeff}s `;
+
+            if (trackingAnimation.current.currentShift == null){
+                setCurrentShift(activeSlide * width);
+                setSavedShift(activeSlide * width);
+            } else {
+                setCurrentShift(trackingAnimation.current.currentShift);
+                setSavedShift(trackingAnimation.current.currentShift);
+            }
+
+            lineRef.current.style.transition = `transform ${animationTime}s `;
             lineRef.current.style.transform = `translateX(${-activeSlide * width}px)`;
 
-            setTimeout(() => {
 
+            bugFix.current = setInterval(() => {
+                document.body.style.height = `${document.body.clientHeight + 1}px`;
+                document.body.style.height = `${document.body.clientHeight - 1}px`;
+            }, 500)
+
+            timeout.current = setTimeout(() => {
                 if (lineRef.current) {
                     lineRef.current.style.transition = ``;
                 }
+                if (bugFix.current) {
+                    clearInterval(bugFix.current)
+                }
                 setAllowStartDrag(true);
-            }, slowDownCoeff * 1000)
-        }
+                trackingAnimation.current.startingSlide = 0;
+                trackingAnimation.current.animationStart = 0;
+                trackingAnimation.current.destinationSlide = 0;
+                trackingAnimation.current.fullAnimationTime = 0;
+                trackingAnimation.current.currentShift = null;
 
+            }, animationTime * 1000)
+        }
+          return ()=>{
+            if (bugFix.current&&timeout.current){
+                clearInterval(bugFix.current)
+                clearTimeout(timeout.current)
+            }
+          }
     }, [activeSlide])
 
     useEffect(() => {
@@ -90,9 +159,9 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
     const completeSwipe = () => {
 
         if (currentShift > savedShift) {
-            setActiveSlide(p => p + 1);
+            setActiveSlide(p => p === itemsCount - 1 ? p : p + 1);
         } else if (currentShift < savedShift) {
-            setActiveSlide(p => p - 1);
+            setActiveSlide(p => p === 0 ? p : p - 1);
         }
 
     }
