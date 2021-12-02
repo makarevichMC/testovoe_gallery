@@ -2,7 +2,7 @@ import React, {FC, useEffect, useRef, useState} from 'react';
 import styles from './Carousel.module.scss';
 import {ReactComponent as ArrowLeft} from '../../images/arrow_left.svg';
 import {ReactComponent as ArrowRight} from '../../images/arrow_right.svg';
-import {log} from 'util';
+
 
 type CarouselProps = {
     activeSlideNumber?: number
@@ -40,6 +40,11 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
             setActiveSlide(activeSlideNumber)
         }
     }, [activeSlideNumber])
+    useEffect(()=>{
+        if (lineRef.current){
+            setWidth(lineRef.current.clientWidth/itemsCount)
+        }
+    },[itemsCount]);
 
     useEffect(() => {
         if (getActiveSlide) {
@@ -53,7 +58,8 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
             Math.abs((currentShift - activeSlide * width) / width);
 
         let animationTime = baseSlowDown * slidesPerSweep;
-
+        console.log('1st',animationTime)
+        console.log(slidesPerSweep)
 
         if (lineRef.current) {
 
@@ -93,7 +99,6 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
 
             lineRef.current.style.transition = `transform ${animationTime}s `;
             lineRef.current.style.transform = `translateX(${-activeSlide * width}px)`;
-
 
             bugFix.current = setInterval(() => {
                 document.body.style.height = `${document.body.clientHeight + 1}px`;
@@ -152,6 +157,9 @@ const Carousel: FC<CarouselProps> = ({children, activeSlideNumber, getActiveSlid
 
     const onSwipeStart = (e: React.PointerEvent) => {
         if (!allowStartDrag) return
+        setCurrentShift(activeSlide * width);
+        setSavedShift(activeSlide * width);
+        e.preventDefault();
         setXCoord(e.pageX);
         setIsDragging(true);
     }
